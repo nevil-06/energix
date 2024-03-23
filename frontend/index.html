@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Energy Token Trade Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.0/web3.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa; /* Light gray background */
+            color: #333; /* Dark gray text color */
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff; /* White container background */
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo{
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #007bff; /* Blue color for the header */
+        }
+
+        .header {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #007bff; /* Blue color for section headings */
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: calc(100% - 10px);
+            padding: 10px;
+            border: 1px solid #ced4da; /* Light gray border */
+            border-radius: 4px;
+        }
+
+        .input-group button {
+            width: 100px;
+            padding: 10px;
+            background-color: #007bff; /* Blue color for buttons */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .trade {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #ced4da; /* Light gray border */
+            border-radius: 4px;
+            background-color: #f8f9fa; /* Light gray background */
+        }
+
+        .trade-info {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .trade-button {
+            background-color: #007bff; /* Blue color for buttons */
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body>
+    <h1 class="logo">EnerGiX</h1>
+    <h2 class="header">Create Energy Trade</h2>
+    <input type="text" id="tradeQuantity" placeholder="Energy Quantity">
+    <input type="text" id="tradePrice" placeholder="Price (in ETH)">
+    <button onclick="createTrade()">Create Trade</button>
+
+    <h2>Available Energy Trades</h2>
+    <div id="availableTrades"></div>
+
+    <script>
+        let accounts;
+        let tokenContract;
+        const contractAddress = '0xf8Dd6C7eD4fA9639D2843726BB3CC2d39fd79D87';
+        const abi = [
+        {
+        "constant": true,
+        "inputs": [],
+        "name": "name",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "totalSupply",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "symbol",
+        "outputs": [
+            {
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "address"
+            },
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "allowance",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "payable": false,
+        "stateMutability": "payable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "from",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "to",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "Transfer",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": true,
+                "name": "owner",
+                "type": "address"
+            },
+            {
+                "indexed": true,
+                "name": "spender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "value",
+                "type": "uint256"
+            }
+        ],
+        "name": "Approval",
+        "type": "event"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "transfer",
+        "outputs": [
+            {
+                "name": "success",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_spender",
+                "type": "address"
+            },
+            {
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "approve",
+        "outputs": [
+            {
+                "name": "success",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_from",
+                "type": "address"
+            },
+            {
+                "name": "_to",
+                "type": "address"
+            },
+            {
+                "name": "_value",
+                "type": "uint256"
+            }
+        ],
+        "name": "transferFrom",
+        "outputs": [
+            {
+                "name": "success",
+                "type": "bool"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "payable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "getTradeCount",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_quantity",
+                "type": "uint256"
+            },
+            {
+                "name": "_price",
+                "type": "uint256"
+            }
+        ],
+        "name": "createTrade",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "payable",
+        "type": "function"
+    }
+];
+
+
+    async function initWeb3() {
+    if (window.ethereum) {
+        try {
+            await window.ethereum.request({ method: 'eth_requestAccounts' }); // Request account access
+            window.web3 = new Web3(window.ethereum); // Create a new Web3 instance
+        } catch (error) {
+            console.error("User denied account access");
+        }
+    } else if (window.web3) { // Legacy dapp browsers...
+        window.web3 = new Web3(web3.currentProvider);
+    } else {
+        window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
+    }
+
+        accounts = await web3.eth.getAccounts();
+        tokenContract = new web3.eth.Contract(abi, contractAddress);
+        loadAvailableTrades();
+    }
+
+    async function createTrade() {
+        const quantity = document.getElementById('tradeQuantity').value;
+        console.log(quantity)
+        const price = web3.utils.toWei(document.getElementById('tradePrice').value, 'ether');
+        console.log(price)
+        try {
+            await tokenContract.methods.createTrade(quantity, price).send({ from: accounts[0] });
+            loadAvailableTrades();
+        } catch (error) {
+            console.error("Error creating trade:", error);
+        }
+    }
+
+    async function loadAvailableTrades() {
+    const tradeCount = await tokenContract.methods.getTradeCount().call();
+    const tradeContainer = document.getElementById('availableTrades');
+    tradeContainer.innerHTML = '';
+
+    for (let i = 0; i < tradeCount; i++) {
+        // Call getTrade directly for trade details
+        const [quantity, price, isActive] = await tokenContract.methods.getTrade(i).call();
+        // Conditionally display trade information based on isActive flag
+        if (isActive) {
+            const priceInEth = web3.utils.fromWei(price, 'ether');
+            const tradeInfo = `Trade ${i}: Sell ${quantity} Energy at ${priceInEth} ETH each`;
+            const tradeButton = `<button onclick="acceptTrade(${i})">Accept Trade</button>`;
+            tradeContainer.innerHTML += `<div>${tradeInfo} ${tradeButton}</div>`;
+        }
+    }
+}
+    
+
+    window.addEventListener('load', initWeb3);
+    </script>
+</body>
+</html>
