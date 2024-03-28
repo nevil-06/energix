@@ -1,421 +1,225 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Energy Token Trade Platform</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.0/web3.min.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f8f9fa; /* Light gray background */
-            color: #333; /* Dark gray text color */
-        }
+    <!DOCTYPE html>
+    <html lang="en">
 
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff; /* White container background */
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Energy Token Trade Platform</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.0/web3.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            @keyframes blockchainAnimation {
+                0% {
+                    background-position: 0 0;
+                }
+                100% {
+                    background-position: 100% 100%;
+                }
+            }
 
-        .logo{
-            text-align: center;
-            font-size: 36px;
-            margin-bottom: 30px;
-            color: #007bff; /* Blue color for the header */
-        }
+            body {
+                animation: blockchainAnimation 150s infinite linear alternate;
+                background-image: url('logo_2.jpeg'); /* Replace 'logo_2.jpeg' with the path to your image */
+                background-size: cover;
+                position: relative;
+            }
 
-        .header {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: #007bff; /* Blue color for section headings */
-        }
+            /* Style for individual trade containers */
+            .trade-container {
+                margin-bottom: 20px;
+                padding: 20px;
+                background-color: rgba(255, 255, 255, 0.9);
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
+            .trade-details {
+                margin-bottom: 10px;
+                font-size: 16px;
+            }
 
-        .input-group input {
-            width: calc(100% - 10px);
-            padding: 10px;
-            border: 1px solid #ced4da; /* Light gray border */
-            border-radius: 4px;
-        }
+            .accept-trade-btn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
 
-        .input-group button {
-            width: 100px;
-            padding: 10px;
-            background-color: #007bff; /* Blue color for buttons */
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+            .accept-trade-btn:hover {
+                background-color: #45a049;
+            }
 
-        .trade {
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #ced4da; /* Light gray border */
-            border-radius: 4px;
-            background-color: #f8f9fa; /* Light gray background */
-        }
+            /* Lighter color for "EnerGiX" heading */
+            .energix-heading {
+                color: rgbargba(0, 0, 0, 0.8); /* Adjust the opacity by changing the last value (0.8) */
+            }
+        </style>
+        <script>
+            let tradeCount = 0; // Variable to keep track of trade count
 
-        .trade-info {
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
+            function createTrade() {
+                // Get trade quantity and price from input fields
+                var tradeQuantity = document.getElementById("tradeQuantity").value;
+                var tradePrice = document.getElementById("tradePrice").value;
 
-        .trade-button {
-            background-color: #007bff; /* Blue color for buttons */
-            color: #fff;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
+                // Increment the trade count
+                tradeCount++;
 
-</head>
-<body>
-    <h1 class="logo">EnerGiX</h1>
-    <h2 class="header">Create Energy Trade</h2>
-    <input type="text" id="tradeQuantity" placeholder="Energy Quantity">
-    <input type="text" id="tradePrice" placeholder="Price (in ETH)">
-    <button onclick="createTrade()">Create Trade</button>
+                // Create a new container for the trade
+                var tradeContainer = document.createElement("div");
+                tradeContainer.classList.add("trade-container");
 
-    <h2>Available Energy Trades</h2>
-    <div id="availableTrades"></div>
+                // Create elements for trade details
+                var tradeDetails = document.createElement("p");
+                tradeDetails.classList.add("trade-details");
+                tradeDetails.textContent = "Trade " + tradeCount + ": Quantity: " + tradeQuantity + ", Price: " + tradePrice + " ETH";
 
-    <script>
+                // Create button for accepting trade
+                var acceptTradeBtn = document.createElement("button");
+                acceptTradeBtn.classList.add("accept-trade-btn");
+                acceptTradeBtn.textContent = "Accept Trade";
+
+                // Append trade details and accept button to the trade container
+                tradeContainer.appendChild(tradeDetails);
+                tradeContainer.appendChild(acceptTradeBtn);
+
+                // Append the trade container to the available trades section
+                var availableTrades = document.getElementById("availableTrades");
+                availableTrades.appendChild(tradeContainer);
+
+                // Clear input fields after creating the trade
+                document.getElementById("tradeQuantity").value = "";
+                document.getElementById("tradePrice").value = "";
+            }
+        </script>
+    </head>
+
+    <body class="bg-gray-100">
+        <div class="container mx-auto p-8 text-center pt-24">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4 energix-heading">EnerGiX</h1>
+            <p class="text-lg text-gray-600 mb-8">Empowering Clean Energy Trading with Cryptocurrency for Sustainable Futures</p>
+
+            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Create Energy Trade</h2>
+
+            <div class="mb-4 flex justify-center">
+                <div class="w-full sm:w-1/2">
+                    <input type="text" id="tradeQuantity" placeholder="Energy Quantity" class="w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:border-blue-400 mb-2">
+                    <input type="text" id="tradePrice" placeholder="Price (in ETH)" class="w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:border-blue-400 mb-2">
+                    <button onclick="createTrade()" id="create_trade_button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow">Create Trade</button>
+                </div>
+            </div>
+
+            <h2 class="text-3xl font-semibold text-gray-700 mt-8">Available Energy Trades</h2>
+
+            <div id="availableTrades" class="mt-4">
+                <!-- Example trade container -->
+                <div class="trade-container">
+                    <p class="trade-details">Trade 1: Quantity: 100, Price: 0.5 ETH</p>
+                    <button class="accept-trade-btn">Accept Trade</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer class="text-center text-gray-500 text-xs mt-4">
+            Created by Rakul, Nevil, Meet, Mihir
+        </footer>
+
+<script>
         let accounts;
         let tokenContract;
-        const contractAddress = '0xf8Dd6C7eD4fA9639D2843726BB3CC2d39fd79D87';
-        const abi = [
-        {
-        "constant": true,
-        "inputs": [],
-        "name": "name",
-        "outputs": [
-            {
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "totalSupply",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "decimals",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint8"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "balanceOf",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "owner",
-        "outputs": [
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "symbol",
-        "outputs": [
-            {
-                "name": "",
-                "type": "string"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [
-            {
-                "name": "",
-                "type": "address"
-            },
-            {
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "name": "allowance",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "payable": false,
-        "stateMutability": "payable",
-        "type": "constructor"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "name": "from",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "name": "to",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Transfer",
-        "type": "event"
-    },
-    {
-        "anonymous": false,
-        "inputs": [
-            {
-                "indexed": true,
-                "name": "owner",
-                "type": "address"
-            },
-            {
-                "indexed": true,
-                "name": "spender",
-                "type": "address"
-            },
-            {
-                "indexed": false,
-                "name": "value",
-                "type": "uint256"
-            }
-        ],
-        "name": "Approval",
-        "type": "event"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "_to",
-                "type": "address"
-            },
-            {
-                "name": "_value",
-                "type": "uint256"
-            }
-        ],
-        "name": "transfer",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "_spender",
-                "type": "address"
-            },
-            {
-                "name": "_value",
-                "type": "uint256"
-            }
-        ],
-        "name": "approve",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "_from",
-                "type": "address"
-            },
-            {
-                "name": "_to",
-                "type": "address"
-            },
-            {
-                "name": "_value",
-                "type": "uint256"
-            }
-        ],
-        "name": "transferFrom",
-        "outputs": [
-            {
-                "name": "success",
-                "type": "bool"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "payable",
-        "type": "function"
-    },
-    {
-        "constant": true,
-        "inputs": [],
-        "name": "getTradeCount",
-        "outputs": [
-            {
-                "name": "",
-                "type": "uint256"
-            }
-        ],
-        "payable": false,
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "constant": false,
-        "inputs": [
-            {
-                "name": "_quantity",
-                "type": "uint256"
-            },
-            {
-                "name": "_price",
-                "type": "uint256"
-            }
-        ],
-        "name": "createTrade",
-        "outputs": [],
-        "payable": false,
-        "stateMutability": "payable",
-        "type": "function"
-    }
-];
+        const contractAddress = '0x53a23C508B2d498FE5DEDfe81D4Abff0850adB18';
+        const abi = [{ "constant": true, "inputs": [], "name": "name", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "uint256" }], "name": "trades", "outputs": [{ "name": "quantity", "type": "uint256" }, { "name": "price", "type": "uint256" }, { "name": "isActive", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [{ "name": "", "type": "uint8" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }], "name": "balanceOf", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "owner", "outputs": [{ "name": "", "type": "address" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [{ "name": "", "type": "string" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "tradeCount", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "", "type": "address" }, { "name": "", "type": "address" }], "name": "allowance", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "inputs": [], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "from", "type": "address" }, { "indexed": true, "name": "to", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "owner", "type": "address" }, { "indexed": true, "name": "spender", "type": "address" }, { "indexed": false, "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "tradeId", "type": "uint256" }, { "indexed": false, "name": "quantity", "type": "uint256" }, { "indexed": false, "name": "price", "type": "uint256" }], "name": "TradeCreated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "name": "tradeId", "type": "uint256" }, { "indexed": true, "name": "buyer", "type": "address" }, { "indexed": false, "name": "quantity", "type": "uint256" }, { "indexed": false, "name": "totalPrice", "type": "uint256" }], "name": "TradeAccepted", "type": "event" }, { "constant": false, "inputs": [{ "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transfer", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "approve", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "name": "success", "type": "bool" }], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [{ "name": "_quantity", "type": "uint256" }, { "name": "_price", "type": "uint256" }], "name": "createTrade", "outputs": [], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": true, "inputs": [], "name": "getTradeCount", "outputs": [{ "name": "", "type": "uint256" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [{ "name": "tradeId", "type": "uint256" }], "name": "getTrade", "outputs": [{ "name": "quantity", "type": "uint256" }, { "name": "price", "type": "uint256" }, { "name": "isActive", "type": "bool" }], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": false, "inputs": [{ "name": "tradeIndex", "type": "uint256" }], "name": "acceptTrade", "outputs": [], "payable": true, "stateMutability": "payable", "type": "function" }]
+            ;
 
 
-    async function initWeb3() {
-    if (window.ethereum) {
-        try {
-            await window.ethereum.request({ method: 'eth_requestAccounts' }); // Request account access
-            window.web3 = new Web3(window.ethereum); // Create a new Web3 instance
-        } catch (error) {
-            console.error("User denied account access");
-        }
-    } else if (window.web3) { // Legacy dapp browsers...
-        window.web3 = new Web3(web3.currentProvider);
-    } else {
-        window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
-    }
+        async function initWeb3() {
+            if (window.ethereum) {
+                try {
+                    await window.ethereum.request({ method: 'eth_requestAccounts' }); // Request account access
+                    window.web3 = new Web3(window.ethereum); // Create a new Web3 instance
+                } catch (error) {
+                    console.error("User denied account access");
+                }
+            } else if (window.web3) { // Legacy dapp browsers...
+                window.web3 = new Web3(web3.currentProvider);
+            } else {
+                window.alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
+            }
 
-        accounts = await web3.eth.getAccounts();
-        tokenContract = new web3.eth.Contract(abi, contractAddress);
-        loadAvailableTrades();
-    }
-
-    async function createTrade() {
-        const quantity = document.getElementById('tradeQuantity').value;
-        console.log(quantity)
-        const price = web3.utils.toWei(document.getElementById('tradePrice').value, 'ether');
-        console.log(price)
-        try {
-            await tokenContract.methods.createTrade(quantity, price).send({ from: accounts[0] });
+            accounts = await web3.eth.getAccounts();
+            tokenContract = new web3.eth.Contract(abi, contractAddress);
             loadAvailableTrades();
-        } catch (error) {
-            console.error("Error creating trade:", error);
         }
-    }
 
-    async function loadAvailableTrades() {
-    const tradeCount = await tokenContract.methods.getTradeCount().call();
-    const tradeContainer = document.getElementById('availableTrades');
-    tradeContainer.innerHTML = '';
-
-    for (let i = 0; i < tradeCount; i++) {
-        // Call getTrade directly for trade details
-        const [quantity, price, isActive] = await tokenContract.methods.getTrade(i).call();
-        // Conditionally display trade information based on isActive flag
-        if (isActive) {
-            const priceInEth = web3.utils.fromWei(price, 'ether');
-            const tradeInfo = `Trade ${i}: Sell ${quantity} Energy at ${priceInEth} ETH each`;
-            const tradeButton = `<button onclick="acceptTrade(${i})">Accept Trade</button>`;
-            tradeContainer.innerHTML += `<div>${tradeInfo} ${tradeButton}</div>`;
+        async function createTrade() {
+            const quantity = document.getElementById('tradeQuantity').value;
+            console.log(quantity)
+            const price = web3.utils.toWei(document.getElementById('tradePrice').value, 'ether');
+            console.log(price)
+            try {
+                await tokenContract.methods.createTrade(quantity, price).send({ from: accounts[0] });
+                loadAvailableTrades();
+            } catch (error) {
+                console.error("Error creating trade:", error);
+            }
         }
+
+                async function loadAvailableTrades() {
+            try {
+                const tradeCount = await tokenContract.methods.getTradeCount().call();
+                console.log("Trade Count:", tradeCount); // Log trade count for debugging
+                const tradeContainer = document.getElementById('availableTrades');
+                console.log(tradeContainer);
+                tradeContainer.innerHTML = '';
+
+                for (let i = 0; i < tradeCount; i++) {
+                    const tradeDetails = await tokenContract.methods.getTrade(i).call();
+                // Conditionally display trade information based on isActive flag
+                if (tradeDetails.isActive) {
+                    const priceInEth = web3.utils.fromWei(tradeDetails.price, 'ether');
+const tradeInfo = `
+  <div class="bg-white shadow-lg rounded-lg overflow-hidden w-1/2 h-1/4">
+    <div class="p-4 flex items-center space-x-4">
+      <div class="font-bold text-xl">Trade ${i}: Sell ${tradeDetails.quantity} Energy</div>
+      <p class="text-gray-700 text-base">Price: ${priceInEth} ETH each</p>
+      <button onclick="acceptTrade(${i})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Accept Trade
+      </button>
+    </div>
+  </div>
+`;
+
+tradeContainer.innerHTML += `<div class="m-4 flex justify-center items-center">${tradeInfo}</div>`;
+                }
+                }
+    } catch (error) {
+        console.error("Error loading available trades:", error);
     }
 }
-    
 
-    window.addEventListener('load', initWeb3);
+        async function acceptTrade(tradeIndex, tradePrice) {
+            // Ensure accounts and tokenContract are already initialized
+            if (!window.web3) {
+                console.log('Ethereum environment not detected.');
+                return;
+            }
+            try {
+                // Assuming tradePrice is already in Wei
+                const transactionReceipt = await tokenContract.methods.acceptTrade(tradeIndex).send({ from: accounts[0], value: tradePrice });
+                console.log('Trade accepted successfully:', transactionReceipt);
+                // Optionally, refresh the trades display here
+                loadAvailableTrades();
+            } catch (error) {
+                console.error('Error accepting trade:', error);
+                alert('There was an error accepting the trade. Check the console for more information.');
+            }
+        }
+
+        window.addEventListener('load', initWeb3);
     </script>
 </body>
+
 </html>
