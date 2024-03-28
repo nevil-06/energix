@@ -1,35 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
+    <!DOCTYPE html>
+    <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Energy Token Trade Platform</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.0/web3.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Energy Token Trade Platform</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/1.3.0/web3.min.js"></script>
+        <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+        <style>
+            @keyframes blockchainAnimation {
+                0% {
+                    background-position: 0 0;
+                }
+                100% {
+                    background-position: 100% 100%;
+                }
+            }
 
-</head>
+            body {
+                animation: blockchainAnimation 150s infinite linear alternate;
+                background-image: url('logo_2.jpeg'); /* Replace 'logo_2.jpeg' with the path to your image */
+                background-size: cover;
+                position: relative;
+            }
 
-<body>
-    <div class="container">
-        <h1 class="group_name">EnerGiX</h1>
-        <br>
-        
-        <h2 class="header">Create Energy Trade</h2>
-        <br><br>
+            /* Style for individual trade containers */
+            .trade-container {
+                margin-bottom: 20px;
+                padding: 20px;
+                background-color: rgba(255, 255, 255, 0.9);
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
 
-        <div class="input-group">
-            <input type="text" id="tradeQuantity" placeholder="Energy Quantity">
-            <br><br>
-            <input type="text" id="tradePrice" placeholder="Price (in ETH)">
+            .trade-details {
+                margin-bottom: 10px;
+                font-size: 16px;
+            }
+
+            .accept-trade-btn {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            .accept-trade-btn:hover {
+                background-color: #45a049;
+            }
+
+            /* Lighter color for "EnerGiX" heading */
+            .energix-heading {
+                color: rgbargba(0, 0, 0, 0.8); /* Adjust the opacity by changing the last value (0.8) */
+            }
+        </style>
+        <script>
+            let tradeCount = 0; // Variable to keep track of trade count
+
+            function createTrade() {
+                // Get trade quantity and price from input fields
+                var tradeQuantity = document.getElementById("tradeQuantity").value;
+                var tradePrice = document.getElementById("tradePrice").value;
+
+                // Increment the trade count
+                tradeCount++;
+
+                // Create a new container for the trade
+                var tradeContainer = document.createElement("div");
+                tradeContainer.classList.add("trade-container");
+
+                // Create elements for trade details
+                var tradeDetails = document.createElement("p");
+                tradeDetails.classList.add("trade-details");
+                tradeDetails.textContent = "Trade " + tradeCount + ": Quantity: " + tradeQuantity + ", Price: " + tradePrice + " ETH";
+
+                // Create button for accepting trade
+                var acceptTradeBtn = document.createElement("button");
+                acceptTradeBtn.classList.add("accept-trade-btn");
+                acceptTradeBtn.textContent = "Accept Trade";
+
+                // Append trade details and accept button to the trade container
+                tradeContainer.appendChild(tradeDetails);
+                tradeContainer.appendChild(acceptTradeBtn);
+
+                // Append the trade container to the available trades section
+                var availableTrades = document.getElementById("availableTrades");
+                availableTrades.appendChild(tradeContainer);
+
+                // Clear input fields after creating the trade
+                document.getElementById("tradeQuantity").value = "";
+                document.getElementById("tradePrice").value = "";
+            }
+        </script>
+    </head>
+
+    <body class="bg-gray-100">
+        <div class="container mx-auto p-8 text-center pt-24">
+            <h1 class="text-5xl font-bold text-gray-800 mb-4 energix-heading">EnerGiX</h1>
+            <p class="text-lg text-gray-600 mb-8">Empowering Clean Energy Trading with Cryptocurrency for Sustainable Futures</p>
+
+            <h2 class="text-3xl font-semibold text-gray-700 mb-4">Create Energy Trade</h2>
+
+            <div class="mb-4 flex justify-center">
+                <div class="w-full sm:w-1/2">
+                    <input type="text" id="tradeQuantity" placeholder="Energy Quantity" class="w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:border-blue-400 mb-2">
+                    <input type="text" id="tradePrice" placeholder="Price (in ETH)" class="w-full py-2 px-4 rounded-md border border-gray-300 shadow-sm focus:outline-none focus:border-blue-400 mb-2">
+                    <button onclick="createTrade()" id="create_trade_button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow">Create Trade</button>
+                </div>
+            </div>
+
+            <h2 class="text-3xl font-semibold text-gray-700 mt-8">Available Energy Trades</h2>
+
+            <div id="availableTrades" class="mt-4">
+                <!-- Example trade container -->
+                <div class="trade-container">
+                    <p class="trade-details">Trade 1: Quantity: 100, Price: 0.5 ETH</p>
+                    <button class="accept-trade-btn">Accept Trade</button>
+                </div>
+            </div>
         </div>
-        <br>
-        <button onclick="createTrade()" id="create_trade_button">Create Trade</button>
-        <br><br>
-        <h2>Available Energy Trades</h2>
-        <div id="availableTrades"></div>
+        
+        <footer class="text-center text-gray-500 text-xs mt-4">
+            Created by Rakul, Nevil, Meet, Mihir
+        </footer>
 
-    <script>
+<script>
         let accounts;
         let tokenContract;
         const contractAddress = '0x53a23C508B2d498FE5DEDfe81D4Abff0850adB18';
@@ -69,24 +167,34 @@
             }
         }
 
-        async function loadAvailableTrades() {
-    try {
-        const tradeCount = await tokenContract.methods.getTradeCount().call();
-        console.log("Trade Count:", tradeCount); // Log trade count for debugging
-        const tradeContainer = document.getElementById('availableTrades');
-        console.log(tradeContainer);
-        tradeContainer.innerHTML = '';
+                async function loadAvailableTrades() {
+            try {
+                const tradeCount = await tokenContract.methods.getTradeCount().call();
+                console.log("Trade Count:", tradeCount); // Log trade count for debugging
+                const tradeContainer = document.getElementById('availableTrades');
+                console.log(tradeContainer);
+                tradeContainer.innerHTML = '';
 
-        for (let i = 0; i < tradeCount; i++) {
-            const tradeDetails = await tokenContract.methods.getTrade(i).call();
-        // Conditionally display trade information based on isActive flag
-        if (tradeDetails.isActive) {
-            const priceInEth = web3.utils.fromWei(tradeDetails.price, 'ether');
-            const tradeInfo = `Trade ${i}: Sell ${tradeDetails.quantity} Energy at ${priceInEth} ETH each`;
-            const tradeButton = `<button onclick="acceptTrade(${i})">Accept Trade</button>`;
-            tradeContainer.innerHTML += `<div>${tradeInfo} ${tradeButton}</div>`;
-        }
-        }
+                for (let i = 0; i < tradeCount; i++) {
+                    const tradeDetails = await tokenContract.methods.getTrade(i).call();
+                // Conditionally display trade information based on isActive flag
+                if (tradeDetails.isActive) {
+                    const priceInEth = web3.utils.fromWei(tradeDetails.price, 'ether');
+const tradeInfo = `
+  <div class="bg-white shadow-lg rounded-lg overflow-hidden w-1/2 h-1/4">
+    <div class="p-4 flex items-center space-x-4">
+      <div class="font-bold text-xl">Trade ${i}: Sell ${tradeDetails.quantity} Energy</div>
+      <p class="text-gray-700 text-base">Price: ${priceInEth} ETH each</p>
+      <button onclick="acceptTrade(${i})" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+        Accept Trade
+      </button>
+    </div>
+  </div>
+`;
+
+tradeContainer.innerHTML += `<div class="m-4 flex justify-center items-center">${tradeInfo}</div>`;
+                }
+                }
     } catch (error) {
         console.error("Error loading available trades:", error);
     }

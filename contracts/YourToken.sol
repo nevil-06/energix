@@ -100,13 +100,12 @@ contract Token {
         return (trade.quantity, trade.price, trade.isActive);
     }
 
-    function acceptTrade(uint256 tradeIndex) public payable {
-    require(trades[tradeIndex].isActive, "Trade is not active");
-    require(msg.value == trades[tradeIndex].price, "Incorrect value sent");
-
-    // Transfer funds directly to the owner of the contract
-    payable(owner).transfer(msg.value);
-
-    trades[tradeIndex].isActive = false;
-}
+    // function acceptTrade(uint256 tradeIndex) public payable {
+    //     require(tradeIndex < trades.length, "Trade does not exist");
+    //     Trade storage trade = trades[tradeIndex];
+    //     require(trade.isActive, "Trade is not active");
+    //     require(msg.value == trade.price, "Incorrect value sent");
+    //     trade.seller.transfer(msg.value);
+    //     trade.isActive = false;
+    // }
 }
