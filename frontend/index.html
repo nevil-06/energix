@@ -215,209 +215,9 @@
     <script>
       let accounts;
       let tokenContract;
-      const contractAddress = "0x3c623551275e38847201C857a12C143c6E40fDBA";
-      const abi = [
-        { inputs: [], stateMutability: "nonpayable", type: "constructor" },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "owner",
-              type: "address",
-            },
-            {
-              indexed: true,
-              internalType: "address",
-              name: "spender",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "value",
-              type: "uint256",
-            },
-          ],
-          name: "Approval",
-          type: "event",
-        },
-        {
-          anonymous: false,
-          inputs: [
-            {
-              indexed: true,
-              internalType: "address",
-              name: "from",
-              type: "address",
-            },
-            {
-              indexed: true,
-              internalType: "address",
-              name: "to",
-              type: "address",
-            },
-            {
-              indexed: false,
-              internalType: "uint256",
-              name: "value",
-              type: "uint256",
-            },
-          ],
-          name: "Transfer",
-          type: "event",
-        },
-        {
-          inputs: [
-            { internalType: "address", name: "", type: "address" },
-            { internalType: "address", name: "", type: "address" },
-          ],
-          name: "allowance",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [{ internalType: "address", name: "", type: "address" }],
-          name: "balanceOf",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [],
-          name: "decimals",
-          outputs: [{ internalType: "uint8", name: "", type: "uint8" }],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [],
-          name: "name",
-          outputs: [{ internalType: "string", name: "", type: "string" }],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [],
-          name: "owner",
-          outputs: [{ internalType: "address", name: "", type: "address" }],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [],
-          name: "symbol",
-          outputs: [{ internalType: "string", name: "", type: "string" }],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [],
-          name: "totalSupply",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          name: "trades",
-          outputs: [
-            {
-              internalType: "address payable",
-              name: "seller",
-              type: "address",
-            },
-            { internalType: "uint256", name: "quantity", type: "uint256" },
-            { internalType: "uint256", name: "price", type: "uint256" },
-            { internalType: "bool", name: "isActive", type: "bool" },
-          ],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [
-            { internalType: "address", name: "_to", type: "address" },
-            { internalType: "uint256", name: "_value", type: "uint256" },
-          ],
-          name: "transfer",
-          outputs: [{ internalType: "bool", name: "success", type: "bool" }],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            { internalType: "address", name: "_spender", type: "address" },
-            { internalType: "uint256", name: "_value", type: "uint256" },
-          ],
-          name: "approve",
-          outputs: [{ internalType: "bool", name: "success", type: "bool" }],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            { internalType: "address", name: "_from", type: "address" },
-            { internalType: "address", name: "_to", type: "address" },
-            { internalType: "uint256", name: "_value", type: "uint256" },
-          ],
-          name: "transferFrom",
-          outputs: [{ internalType: "bool", name: "success", type: "bool" }],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            { internalType: "uint256", name: "_quantity", type: "uint256" },
-            { internalType: "uint256", name: "_price", type: "uint256" },
-          ],
-          name: "createTrade",
-          outputs: [],
-          stateMutability: "nonpayable",
-          type: "function",
-        },
-        {
-          inputs: [
-            { internalType: "uint256", name: "tradeIndex", type: "uint256" },
-          ],
-          name: "acceptTrade",
-          outputs: [],
-          stateMutability: "payable",
-          type: "function",
-          payable: true,
-        },
-        {
-          inputs: [],
-          name: "getTradeCount",
-          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-        {
-          inputs: [{ internalType: "uint256", name: "index", type: "uint256" }],
-          name: "getTrade",
-          outputs: [
-            { internalType: "address", name: "seller", type: "address" },
-            { internalType: "uint256", name: "quantity", type: "uint256" },
-            { internalType: "uint256", name: "price", type: "uint256" },
-            { internalType: "bool", name: "isActive", type: "bool" },
-          ],
-          stateMutability: "view",
-          type: "function",
-          constant: true,
-        },
-      ];
-      async function initWeb3() {
+      const contractAddress = "0xba9C341676aFD77E7A4CebF1d697408f10E510E3";
+      const abi = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"","type":"address"},{"internalType":"address","name":"","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"trades","outputs":[{"internalType":"address payable","name":"seller","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_spender","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"success","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_quantity","type":"uint256"},{"internalType":"uint256","name":"_price","type":"uint256"}],"name":"createTrade","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"tradeIndex","type":"uint256"}],"name":"acceptTrade","outputs":[],"stateMutability":"payable","type":"function","payable":true},{"inputs":[],"name":"getTradeCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function","constant":true},{"inputs":[{"internalType":"uint256","name":"index","type":"uint256"}],"name":"getTrade","outputs":[{"internalType":"address","name":"seller","type":"address"},{"internalType":"uint256","name":"quantity","type":"uint256"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"}],"stateMutability":"view","type":"function","constant":true}];
+async function initWeb3() {
         if (window.ethereum) {
           try {
             await window.ethereum.request({ method: "eth_requestAccounts" }); // Request account access
@@ -456,68 +256,59 @@
         }
       }
       async function acceptTrade(tradeIndex, tradePrice) {
-        if (!window.web3) {
-          console.log("Ethereum environment not detected.");
-          return;
-        }
+    if (!window.web3) {
+        console.log("Ethereum environment not detected.");
+        return;
+    }
 
-        try {
-          const transactionReceipt = await tokenContract.methods
-            .acceptTrade(tradeIndex)
-            .send({ from: accounts[0], value: tradePrice });
-          console.log("Trade accepted successfully:", transactionReceipt);
+    try {
+        const tokenContract = new web3.eth.Contract(abi, contractAddress); // Assuming you have abi and contractAddress defined elsewhere
 
-          // Display the success message on the frontend
-          // const successMessage = `Trade accepted successfully: Transaction Hash - ${transactionReceipt.transactionHash}`;
-          // document.getElementById("tradeStatus").innerHTML = successMessage;
+        const accounts = await web3.eth.getAccounts();
 
-          // Update the accepted trades display
-          const acceptedTradesDiv = document.getElementById("acceptedTrades");
-          const tradeAcceptedInfo = document.createElement("div");
-          // tradeAcceptedInfo.innerHTML = `Accepted Trade ${tradeIndex}: Transaction Hash - ${transactionReceipt.transactionHash}`;
-          const tradeInfo = `
-                    <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full h-1/4">
-                        <div class="p-4 flex items-center space-x-4">
-                            <div class="font-bold text-xl">Accepted Trade ${
-                              tradeIndex + 1
-                            }</div>
-                            <p class="ellipsis text-gray-700 text-base">Transaction Hash - ${
-                              transactionReceipt.transactionHash
-                            }</p>
-                            
-                        </div>
-                    </div>`;
+        const transactionReceipt = await tokenContract.methods.acceptTrade(tradeIndex).send({ from: accounts[0], value: tradePrice });
 
-          ////
-          tradeAcceptedInfo.innerHTML += `<div class="m-4 flex justify-center items-center">${tradeInfo}</div>`;
-          acceptedTradesDiv.appendChild(tradeAcceptedInfo);
+        console.log("Trade accepted successfully:", transactionReceipt);
 
-          let existingArray =
-            JSON.parse(localStorage.getItem("acceptedTrades")) || [];
+        // Display the success message on the frontend
+        const acceptedTradesDiv = document.getElementById("acceptedTrades");
+        const tradeInfo = `
+            <div class="bg-white shadow-lg rounded-lg overflow-hidden w-full h-1/4">
+                <div class="p-4 flex items-center space-x-4">
+                    <div class="font-bold text-xl">Accepted Trade ${
+                      tradeIndex + 1
+                    }</div>
+                    <p class="ellipsis text-gray-700 text-base">Transaction Hash - ${
+                      transactionReceipt.transactionHash
+                    }</p>
+                </div>
+            </div>`;
 
-          // Step 2: Append new data to the array
-          let newData = {
+        const tradeAcceptedInfo = document.createElement("div");
+        tradeAcceptedInfo.innerHTML = `<div class="m-4 flex justify-center items-center">${tradeInfo}</div>`;
+        acceptedTradesDiv.appendChild(tradeAcceptedInfo);
+
+        // Store accepted trade in local storage
+        let existingArray = JSON.parse(localStorage.getItem("acceptedTrades")) || [];
+        let newData = {
             index: tradeIndex + 1,
             hash: transactionReceipt.transactionHash,
             // Other new trade data properties...
-          }; // Your new data to append
-          existingArray.push(newData);
+        };
+        existingArray.push(newData);
+        let updatedArrayJson = JSON.stringify(existingArray);
+        localStorage.setItem("acceptedTrades", updatedArrayJson);
 
-          // Step 3: Convert the updated array back to JSON string
-          let updatedArrayJson = JSON.stringify(existingArray);
-
-          // Step 4: Store the updated JSON string in local storage
-          localStorage.setItem("acceptedTrades", updatedArrayJson);
-
-          // Optionally, refresh the trades display here
-          loadAvailableTrades();
-        } catch (error) {
-          console.error("Error accepting trade:", error);
-          alert(
+        // Optionally, refresh the trades display here
+        loadAvailableTrades();
+    } catch (error) {
+        console.error("Error accepting trade:", error);
+        alert(
             "There was an error accepting the trade. Check the console for more information."
-          );
-        }
-      }
+        );
+    }
+}
+
 
       async function loadAcceptedTrades() {
         try {
